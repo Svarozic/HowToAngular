@@ -29,6 +29,63 @@ ngAfterViewInit() {
 ```
 
 
+#### [Angular2] How load config from server before bootstraping
+- http://stackoverflow.com/questions/39033835/angularjs2-preload-server-configuration-before-the-application-starts/39033958
+- code:
+
+```js
+@Injectable()
+export class ConfigService {
+  static DASHBOARD_CONFIG_ADDRESS = 'dashboard-configuration.json';
+
+  private _config: Config;
+
+  constructor(private http: Http) { }
+
+  loadConfig(): Promise<Config> {
+    const serviceThat = this;
+
+    return new Promise((resolve) => {
+      this.http.get(ConfigService.DASHBOARD_CONFIG_ADDRESS).map(res => res.json()).toPromise()
+        .then((configResponse) => {
+          serviceThat._config = configResponse;
+          console.info('[ConfigService] dashboard configuration: ' + JSON.stringify(configResponse));
+          resolve();
+        })
+        .catch(() => {
+          console.error('[ConfigService] could not get dashboard configuration !');
+          resolve();
+        });
+    });
+  }
+
+  getConfig(): Config {
+    return this._config;
+  }
+
+}
+
+
+//module js file
+export function loadConfigFn(configService: ConfigService) {
+  return () => configService.loadConfig();
+}
+
+@NgModule({
+providers: [
+    FetchingService,
+    ConfigService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: loadConfigFn,
+      deps: [ConfigService],
+      multi: true,
+    }
+  ]
+})
+
+```
+
 #### [angular-cli] Integration of Font-Awesome (External css lib with url to fonts)
 - pridal som v `angular-cli.json` style hodnotu, cesta na `node_modules` min css, URLs vo vnutry css-iek sa po kompilacii angular-cli poriesili a dotahali fonty ako assets
 
