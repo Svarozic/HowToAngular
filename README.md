@@ -2,6 +2,10 @@
 spoznamkovane problemy pri tvorbe angular2 appiek pomocou angular-cli alebo inych seedov
 
 
+#### [Angular2] How trigger change detection when 'ChangeDetectionStrategy.OnPush'
+- `this._changeDetectorRef.detectChanges();`
+- observable or ngZone.run() trigger tick and change automatically 
+
 #### [Angular2] How expose angular 2 methods / call from outside of angular2 ?
 - http://stackoverflow.com/questions/35276291/how-do-expose-angular-2-methods-publicly/35276652?noredirect=1#comment58266532_35276652
 - http://stackoverflow.com/questions/35296704/angular2-how-to-call-component-function-from-outside-the-app
