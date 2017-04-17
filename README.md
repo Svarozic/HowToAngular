@@ -2,26 +2,63 @@
 spoznamkovane problemy pri tvorbe angular2 appiek pomocou angular-cli alebo inych seedov
 
 
-#### [Angular2] How trigger change detection when 'ChangeDetectionStrategy.OnPush'
+#### [Angular] How create custom Input/Output property, ngModel
+- http://stackoverflow.com/questions/35327929/angular-2-ngmodel-in-child-component-updates-parent-component-property
+```typescript
+import {Component, EventEmitter, Input, Output} from 'angular2/core'
+
+@Component({
+    selector: 'child',
+    template: `
+        <p>Child sharedVar: {{sharedVar}}</p>
+        <input [ngModel]="sharedVar" (ngModelChange)="change($event)">
+    `
+})
+export class ChildComponent {
+    @Input() sharedVar: string;
+    @Output() sharedVarChange = new EventEmitter();
+    change(newValue) {
+      console.log('newvalue', newValue)
+      this.sharedVar = newValue;
+      this.sharedVarChange.emit(newValue);
+    }
+}
+
+@Component({
+    selector: 'parent',
+    template: `
+        <div>Parent sharedVarParent: {{sharedVarParent}}</div>
+        <child [(sharedVar)]="sharedVarParent"></child>
+    `,
+    directives: [ChildComponent]
+})
+export class ParentComponent {
+    sharedVarParent ='hello';
+    constructor() { console.clear(); }
+}
+```
+
+
+#### [Angular] How trigger change detection when 'ChangeDetectionStrategy.OnPush'
 - `this._changeDetectorRef.detectChanges();`
 - observable or ngZone.run() trigger tick and change automatically 
 
-#### [Angular2] How expose angular 2 methods / call from outside of angular2 ?
+#### [Angular] How expose angular 2 methods / call from outside of angular2 ?
 - http://stackoverflow.com/questions/35276291/how-do-expose-angular-2-methods-publicly/35276652?noredirect=1#comment58266532_35276652
 - http://stackoverflow.com/questions/35296704/angular2-how-to-call-component-function-from-outside-the-app
 
 
-#### [Angular2] Pre-Bootstraping template
+#### [Angular] Pre-Bootstraping template
 - vsetko v angular directive bude vymazane po na-bootstrap-ovani angular appky
 - logo/image ako byte array https://www.base64-image.de/ - vynecha dodatocny request pre obrazok v boostrap template-e
 
 
-#### [Angular2] Real debounce on input element
+#### [Angular] Real debounce on input element
 - http://stackoverflow.com/questions/32051273/angular2-and-debounce
 - NeMoX filterbar
 
 
-#### [Angular2] Ako pouzit jQuery v komponente
+#### [Angular] Ako pouzit jQuery v komponente
 ```js
 declare var jQuery: any;
 //...
@@ -33,7 +70,7 @@ ngAfterViewInit() {
 ```
 
 
-#### [Angular2] How load config from server before bootstraping
+#### [Angular] How load config from server before bootstraping
 - http://stackoverflow.com/questions/39033835/angularjs2-preload-server-configuration-before-the-application-starts/39033958
 - code:
 
