@@ -125,6 +125,15 @@ class foo {
 }
 ```
 
+#### [TypeScript]  Property 'map' does not exist on type 'Observable<Response>'
+- check if I have import on Angular Response type and apropriate rxjs operators
+```
+import { Response } from '@angular/http';
+
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/toPromise';
+```
+
 
 #### [TypeScript] Ako explicitne setnem hodnotu na `window` objekt ?
 - http://stackoverflow.com/questions/12709074/how-do-you-explicitly-set-a-new-property-on-window-in-typescript
