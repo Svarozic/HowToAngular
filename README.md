@@ -3,6 +3,7 @@ spoznamkovane problemy pri tvorbe angular2 appiek pomocou angular-cli alebo inyc
 
 #### [Angular] How to create Angula library
 - http://www.dzurico.com/how-to-create-an-angular-library/
+- http://blog.angular-university.io/how-to-create-an-angular-2-library-and-how-to-consume-it-jspm-vs-webpack/
 
 
 #### [Angular] How create custom Input/Output property, ngModel
