@@ -2,9 +2,7 @@
 spoznamkovane problemy pri tvorbe angular2 appiek pomocou angular-cli alebo inych seedov
 
 #### [Angular] How to create Angula library
-- http://www.dzurico.com/how-to-create-an-angular-library/
-- http://blog.angular-university.io/how-to-create-an-angular-2-library-and-how-to-consume-it-jspm-vs-webpack/
-
+SYNC version:
 - http://stackoverflow.com/questions/40089316/how-to-share-service-between-two-modules-ngmodule-in-angular2
 
 ```typescript
@@ -38,6 +36,11 @@ import { SomeOtherComponent }   from './some.other.component';
 })
 export class SomeOtherModule { }
 ```
+
+ASYNC version (lazy loading) with forRoot pattern:
+- http://blog.angular-university.io/angular2-ngmodule/
+- http://www.dzurico.com/how-to-create-an-angular-library/
+- http://blog.angular-university.io/how-to-create-an-angular-2-library-and-how-to-consume-it-jspm-vs-webpack/
 
 
 #### [Angular] How create custom Input/Output property, ngModel
