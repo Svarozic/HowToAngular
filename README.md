@@ -1,6 +1,30 @@
 # HowToAngular2
 spoznamkovane problemy pri tvorbe angular2 appiek pomocou angular-cli alebo inych seedov
 
+#### [Angular] Elegant way to unsubscribe Observables
+- https://www.reddit.com/r/Angular2/comments/67q5us/when_to_unsubscribe_in_angular/?st=j26h7w73&sh=96e72432
+
+```typescript
+@Component({
+  selector: 'blah',
+  template: 'blah',
+})
+export class MyComponent {
+  private onDestroy$ = new Subject();
+
+  constructor(http: Http) {
+    // Use .takeUntil() instead of tracking subscriptions manually. This should be the last
+    // operator before .subscribe().
+    http.get('/url').takeUntil(this.onDestroy$).subscribe(...);
+  } 
+
+  ngOnDestroy() {
+    // Clean up all subscriptions at once:
+    this.onDestroy$.next();
+  }
+}
+```
+
 #### [Angular] How to create Angula library
 SYNC version:
 - http://stackoverflow.com/questions/40089316/how-to-share-service-between-two-modules-ngmodule-in-angular2
