@@ -1,6 +1,9 @@
 # HowToAngular2
 spoznamkovane problemy pri tvorbe angular2 appiek pomocou angular-cli alebo inych seedov
 
+#### [Angular] How to create Angula library
+- http://www.dzurico.com/how-to-create-an-angular-library/
+
 
 #### [Angular] How create custom Input/Output property, ngModel
 - http://stackoverflow.com/questions/35327929/angular-2-ngmodel-in-child-component-updates-parent-component-property
