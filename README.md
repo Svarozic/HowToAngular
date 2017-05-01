@@ -5,6 +5,40 @@ spoznamkovane problemy pri tvorbe angular2 appiek pomocou angular-cli alebo inyc
 - http://www.dzurico.com/how-to-create-an-angular-library/
 - http://blog.angular-university.io/how-to-create-an-angular-2-library-and-how-to-consume-it-jspm-vs-webpack/
 
+- http://stackoverflow.com/questions/40089316/how-to-share-service-between-two-modules-ngmodule-in-angular2
+
+```typescript
+/// some.module.ts
+import { NgModule } from '@angular/core';
+
+import { SomeComponent }   from './some.component';
+
+@NgModule({
+    imports: [],
+    exports: [],
+    declarations: [SomeComponent],
+    providers: [ MyService ], // <======================= PROVIDE THE SERVICE
+})
+export class SomeModule { }
+```
+
+```typescript
+/// some-other.module.ts
+import { NgModule } from '@angular/core';
+
+import { SomeModule } from 'path/to/some.module'; // <=== IMPORT THE JSMODULE
+
+import { SomeOtherComponent }   from './some.other.component';
+
+@NgModule({
+    imports: [ SomeModule ], // <======================== IMPORT THE NG MODULE
+    exports: [],
+    declarations: [SomeOtherComponent],
+    providers: [],
+})
+export class SomeOtherModule { }
+```
+
 
 #### [Angular] How create custom Input/Output property, ngModel
 - http://stackoverflow.com/questions/35327929/angular-2-ngmodel-in-child-component-updates-parent-component-property
