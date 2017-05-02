@@ -192,6 +192,12 @@ providers: [
 
 ```
 
+
+#### [angular-cli] Webpack Warning that export 'INTERFACE' was not found
+- workaround https://github.com/angular/angular-cli/issues/2034 
+  - interfaces folder with index.ts that export all interfaces manually
+  - split each interface into separate file
+
 #### [angular-cli] Integration of Font-Awesome (External css lib with url to fonts)
 - pridal som v `angular-cli.json` style hodnotu, cesta na `node_modules` min css, URLs vo vnutry css-iek sa po kompilacii angular-cli poriesili a dotahali fonty ako assets
 
