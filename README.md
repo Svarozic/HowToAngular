@@ -2,7 +2,7 @@
 spoznamkovane problemy pri tvorbe angular2 appiek pomocou angular-cli alebo inych seedov
 
 #### [Angular] NgRouter and dynamic base location trick
-- https://angular.io/docs/ts/latest/guide/router.html#!#getting-started
+- https://angular.io/docs/ts/latest/guide/router.html#!#base-href
 
 ```html
 <script>document.write('<base href="' + document.location + '" />');</script>
