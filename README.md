@@ -1,6 +1,13 @@
 # HowToAngular2
 spoznamkovane problemy pri tvorbe angular2 appiek pomocou angular-cli alebo inych seedov
 
+#### [Angular] NgRouter and dynamic base location trick
+- https://angular.io/docs/ts/latest/guide/router.html#!#getting-started
+
+```html
+<script>document.write('<base href="' + document.location + '" />');</script>
+```
+
 #### [Angular] Elegant way to unsubscribe Observables
 - https://www.reddit.com/r/Angular2/comments/67q5us/when_to_unsubscribe_in_angular/?st=j26h7w73&sh=96e72432
 
