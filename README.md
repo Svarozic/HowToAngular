@@ -240,6 +240,20 @@ class foo {
 }
 ```
 
+#### [RxJs] debounceTime on Window resize event
+- debounceTime on window resize event and calculate IFrame height, similar throttleTime()
+```
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/debounceTime';
+
+Observable.fromEvent(window, 'resize')
+      .debounceTime(100)
+      .subscribe((e: any) => {
+        this.calculateIFrameHeight(e.target.innerHeight);
+});
+```
+
+
 #### [TypeScript]  Property 'map' does not exist on type 'Observable<Response>'
 - check if I have import on Angular Response type and apropriate rxjs operators
 ```
