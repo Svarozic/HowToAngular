@@ -1,6 +1,19 @@
 # HowToAngular2
 spoznamkovane problemy pri tvorbe angular2 appiek pomocou angular-cli alebo inych seedov
 
+#### [Angular] Window resize event
+
+```
+import 'rxjs/add/operator/debounceTime';
+import 'reflect-metadata';
+
+// in component
+@HostListener('window:resize', ['$event'])
+  onWindowResize(event) {
+    // this.windowResizeEvent$.next(event);
+  }
+```
+
 #### [Angular] NgRouter and dynamic base location trick
 - https://angular.io/docs/ts/latest/guide/router.html#!#base-href
 
@@ -238,19 +251,6 @@ class foo {
         this._bar = theBar;
     }
 }
-```
-
-#### [RxJs] debounceTime on Window resize event
-- debounceTime on window resize event and calculate IFrame height, similar throttleTime()
-```
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/debounceTime';
-
-Observable.fromEvent(window, 'resize')
-      .debounceTime(100)
-      .subscribe((e: any) => {
-        this.calculateIFrameHeight(e.target.innerHeight);
-});
 ```
 
 
