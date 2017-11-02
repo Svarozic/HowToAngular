@@ -7,8 +7,7 @@ spoznamkovane problemy pri tvorbe angular2 appiek pomocou angular-cli alebo inyc
 import 'rxjs/add/operator/debounceTime';
 import 'reflect-metadata';
 
-// in component
-@HostListener('window:resize', ['$event'])
+@HostListener('window:resize', ['$event']) // in component, trigger ChangeDetector if onPush strategy is used
   onWindowResize(event) {
     // this.windowResizeEvent$.next(event);
   }
