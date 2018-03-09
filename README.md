@@ -1,34 +1,114 @@
 # HowToAngular2
-spoznamkovane problemy pri tvorbe angular2 appiek pomocou angular-cli alebo inych seedov
 
-### [Angular] Window resize event
 
+
+### Window resize event
+
+#### Simple with debounce in component
 ```
-import 'rxjs/add/operator/debounceTime';
-import 'reflect-metadata';
+private windowResizeEvent$: BehaviorSubject<number> = new BehaviorSubject(window.innerHeight);
 
-@HostListener('window:resize', ['$event']) // in component, trigger ChangeDetector if onPush strategy is used
-  onWindowResize(event) {
-    // this.windowResizeEvent$.next(event);
+@HostListener('window:resize', ['$event.target.innerHeight'])
+onWindowResize(innerHeight: number) {
+  this.windowResizeEvent$.next(innerHeight);
+}
+
+this.windowResizeEvent$
+     .debounceTime(10) //GRYF throttling !
+     .subscribe((windowInnerHeight) => {
+       this.calculateIFrameHeight(windowInnerHeight);
+     });
+```
+
+#### As angular service with EventManager
+- https://stackoverflow.com/questions/35527456/angular-window-resize-event
+
+window-events.service.ts
+```js
+import { EventManager } from '@angular/platform-browser';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+import { Injectable } from '@angular/core';
+
+@Injectable()
+export class WindowEventsService {
+
+  get onResize$(): Observable<Window> {
+    return this.resizeSubject.asObservable();
   }
+
+  private resizeSubject: Subject<Window>;
+
+  constructor(private eventManager: EventManager) {
+    this.resizeSubject = new Subject();
+    this.eventManager.addGlobalEventListener('window', 'resize', this.onResize.bind(this));
+  }
+
+  private onResize(event: UIEvent) {
+    this.resizeSubject.next(<Window>event.target);
+  }
+}
 ```
 
-### [Angular] Base Tag for production on build
+usage in component
+```js
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'my-component',
+  template: ``,
+  styles: [``]
+})
+export class MyComponent implements OnInit {
+
+  private resizeSubscription: Subscription;
+
+  constructor(private windowEventsService: WindowEventsService) { }
+
+  ngOnInit() {
+     // if ChangeDetectionStrategy.OnPush is used in component, markForCheck ChangeDetector !!
+    this.resizeSubscription = this.windowEventsService.onResize$
+      .subscribe(size => console.log(size));
+  }
+
+  ngOnDestroy() {
+    if (this.resizeSubscription) {
+      this.resizeSubscription.unsubscribe();
+    }
+  }
+}
+```
+
+
+
+### ChangeDetectorRef.detectChanges() vs ChangeDetectorRef.markForCheck()
+https://stackoverflow.com/questions/41364386/whats-the-difference-between-markforcheck-and-detectchanges
+So in short :
+- Use detectChanges() when you've updated the model after angular has run it's change detection, or if the update hasn't been in angular world at all.
+- Use markForCheck() if you're using OnPush and you're bypassing the ChangeDetectionStrategy by mutating some data or you've updated the model inside a setTimeout;
+
+https://alligator.io/angular/change-detection-strategy/
+
+
+
+### HTML Base Tag
+#### for production on build
 - https://github.com/angular/angular-cli/blob/master/docs/documentation/build.md#base-tag-handling-in-indexhtml
 ```
 # Sets base tag href to /myUrl/ in your index.html
 ng build --base-href /myUrl/
 ng build --bh /myUrl/
 ```
-
-### [Angular] Dynamic Base tag for NgRouter
+#### for NgRouter
 - https://angular.io/guide/router#set-the-base-href
 - You only need this trick for the live example, not production code
 ```html
 <script>document.write('<base href="' + document.location + '" />');</script>
 ```
 
-### [Angular] Elegant way to unsubscribe Observables
+
+
+### Elegant way to unsubscribe Observables
 - https://www.reddit.com/r/Angular2/comments/67q5us/when_to_unsubscribe_in_angular/?st=j26h7w73&sh=96e72432
 
 ```typescript
@@ -53,11 +133,13 @@ export class MyComponent {
 }
 ```
 
-### [Angular] How to create Angula library
+
+
+### How to create Angula library
 SYNC version:
 - http://stackoverflow.com/questions/40089316/how-to-share-service-between-two-modules-ngmodule-in-angular2
 
-```typescript
+```js
 /// some.module.ts
 import { NgModule } from '@angular/core';
 
@@ -72,7 +154,7 @@ import { SomeComponent }   from './some.component';
 export class SomeModule { }
 ```
 
-```typescript
+```js
 /// some-other.module.ts
 import { NgModule } from '@angular/core';
 
@@ -95,9 +177,10 @@ ASYNC version (lazy loading) with forRoot pattern:
 - http://blog.angular-university.io/how-to-create-an-angular-2-library-and-how-to-consume-it-jspm-vs-webpack/
 
 
-### [Angular] How create custom Input/Output property, ngModel
+
+### How create custom Input/Output property, ngModel
 - http://stackoverflow.com/questions/35327929/angular-2-ngmodel-in-child-component-updates-parent-component-property
-```typescript
+```js
 import {Component, EventEmitter, Input, Output} from 'angular2/core'
 
 @Component({
@@ -132,26 +215,26 @@ export class ParentComponent {
 ```
 
 
-### [Angular] How trigger change detection when 'ChangeDetectionStrategy.OnPush'
-- `this._changeDetectorRef.detectChanges();`
-- observable or ngZone.run() trigger tick and change automatically
 
-### [Angular] How expose angular 2 methods / call from outside of angular2 ?
+### How expose angular 2 methods / call from outside of angular2 ?
 - http://stackoverflow.com/questions/35276291/how-do-expose-angular-2-methods-publicly/35276652?noredirect=1#comment58266532_35276652
 - http://stackoverflow.com/questions/35296704/angular2-how-to-call-component-function-from-outside-the-app
 
 
-### [Angular] Pre-Bootstraping template
+
+### Pre-Bootstraping template
 - vsetko v angular directive bude vymazane po na-bootstrap-ovani angular appky
 - logo/image ako byte array https://www.base64-image.de/ - vynecha dodatocny request pre obrazok v boostrap template-e
 
 
-### [Angular] Real debounce on input element
+
+### Real debounce on input element
 - http://stackoverflow.com/questions/32051273/angular2-and-debounce
 - NeMoX filterbar
 
 
-### [Angular] Ako pouzit jQuery v komponente
+
+### Ako pouzit jQuery v komponente
 ```js
 declare var jQuery: any;
 //...
@@ -163,7 +246,8 @@ ngAfterViewInit() {
 ```
 
 
-### [Angular] How load config from server before bootstraping
+
+### How load config from server before bootstraping
 - http://stackoverflow.com/questions/39033835/angularjs2-preload-server-configuration-before-the-application-starts/39033958
 - code:
 
@@ -199,7 +283,6 @@ export class ConfigService {
 
 }
 
-
 //module js file
 export function loadConfigFn(configService: ConfigService) {
   return () => configService.loadConfig();
@@ -221,17 +304,22 @@ providers: [
 ```
 
 
+
 ### [angular-cli] Webpack Warning that export 'INTERFACE' was not found
 - workaround https://github.com/angular/angular-cli/issues/2034
   - interfaces folder with index.ts that export all interfaces manually
   - split each interface into separate file
 
+
+
 ### [angular-cli] Integration of Font-Awesome (External css lib with url to fonts)
 - pridal som v `angular-cli.json` style hodnotu, cesta na `node_modules` min css, URLs vo vnutry css-iek sa po kompilacii angular-cli poriesili a dotahali fonty ako assets
 
 
+
 ### [Chrome] debug Devpanel/Devtools ako chrome extension ?
 - http://stackoverflow.com/questions/27661243/how-to-debug-chrome-devtools-panel-extension
+
 
 
 ### [Chrome] Angular app ako chrome extension (devpanel) nefunguje bootstraping ?
@@ -243,13 +331,15 @@ Unhandled Promise rejection: Refused to evaluate a string as JavaScript because 
 - `"content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"` vyriesilo moj problem
 
 
+
 ### [ImmutableJS] object as Observable value trick
 - https://github.com/ngrx/store/issues/233
 - `_store.select('counter').map((immuObj: List<any>) => immuObj.toJS())`
 
 
+
 ### [ImmutableJS] neviem pracovat s Typescript getters() setters() !!
-```typescript
+```js
 class foo {
     private _bar:boolean = false;
     get bar():boolean {
@@ -262,10 +352,15 @@ class foo {
 ```
 
 
-### [TypeScript]  Property 'map' does not exist on type 'Observable<Response>'
-```
+
+### [RxJs] How to import RxJs
+```js
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+
 import 'rxjs/add/operator/map';
 ```
+
 
 
 ### [TypeScript] Ako explicitne setnem hodnotu na `window` objekt ?
@@ -273,23 +368,6 @@ import 'rxjs/add/operator/map';
 - `(<any>window).WHATEVER=0`
 
 
+
 ### [Typescript] nepozna `chrome` window objekt
 - `declare var chrome: any;` at top and ignore it
-
-
-### [Rxjs] Simple observable exmaple
-```
-private windowResizeEvent$: BehaviorSubject<number> = new BehaviorSubject(window.innerHeight);
-
-@HostListener('window:resize', ['$event.target.innerHeight'])
-  onWindowResize(innerHeight: number) {
-    this.windowResizeEvent$.next(innerHeight);
-  }
-
-this.windowResizeEvent$
-     .debounceTime(10) //GRYF throttling !
-     .subscribe((windowInnerHeight) => {
-       this.calculateIFrameHeight(windowInnerHeight);
-     });
-
-```
