@@ -22,7 +22,8 @@ this.windowResizeEvent$
 
 #### As angular service with EventManager
 - https://stackoverflow.com/questions/35527456/angular-window-resize-event
-
+  - plus improvement: Observables is not created each time getter is called, it is created once in constructor
+  
 window-events.service.ts
 ```js
 import { EventManager } from '@angular/platform-browser';
@@ -33,19 +34,31 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class WindowEventsService {
 
-  get onResize$(): Observable<Window> {
-    return this.resizeSubject.asObservable();
-  }
+  private static RESIZE_DEBOUNCE_TIME_MS = 10;
 
-  private resizeSubject: Subject<Window>;
+  private _resizeSubject$: Subject<Window>;
+  /**
+   * Used to provide {@linkcode _resizeSubject$}
+   *  - in safe way out of service
+   *  - with filtered values with debounce and distinct
+   */
+  private resize$: Observable<Window>;
 
   constructor(private eventManager: EventManager) {
-    this.resizeSubject = new Subject();
-    this.eventManager.addGlobalEventListener('window', 'resize', this.onResize.bind(this));
+    this._resizeSubject$ = new Subject();
+    this.resize$ = this._resizeSubject$.asObservable()
+                       .distinctUntilChanged()
+                       .debounceTime(WindowEventsService.RESIZE_DEBOUNCE_TIME_MS);
+
+    this.eventManager.addGlobalEventListener('window', 'resize', this.onWindowResize.bind(this));
   }
 
-  private onResize(event: UIEvent) {
-    this.resizeSubject.next(<Window>event.target);
+  private onWindowResize(event: UIEvent) {
+    this._resizeSubject$.next(<Window>event.target);
+  }
+
+  get onResize$(): Observable<Window> {
+    return this.resize$;
   }
 }
 ```
