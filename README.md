@@ -1,5 +1,36 @@
 # HowToAngular2
 
+### Template Slot system
+- `list.ts`
+```html
+<!-- PARENT -->
+<celum-list>
+  <!-- name template for container in celum-list -->
+  <div top-list-item></div>
+</celum-list>
+
+
+<!-- CHILD celum-list -->
+<div>
+  TMPL content
+  <!-- slot with specific select -->
+  <ng-content select="[top-list-item]"></ng-content>
+</div>
+```
+
+
+
+### window.requestAnimationFrame
+- https://developer.mozilla.org/de/docs/Web/API/window/requestAnimationFrame
+- https://github.com/angular/angular/issues/8804
+```js
+this.ngZone.runOutsideAngular(() => {
+      requestAnimationFrame(() => {
+        //code
+      });
+});
+```
+
 
 
 ### Window resize event
@@ -23,7 +54,7 @@ this.windowResizeEvent$
 #### As angular service with EventManager
 - https://stackoverflow.com/questions/35527456/angular-window-resize-event
   - plus improvement: Observables is not created each time getter is called, it is created once in constructor
-  
+
 window-events.service.ts
 ```js
 import { EventManager } from '@angular/platform-browser';
@@ -94,7 +125,11 @@ export class MyComponent implements OnInit {
 
 
 
-### ChangeDetectorRef.detectChanges() vs ChangeDetectorRef.markForCheck()
+### ChangeDetectionStrategy
+- Change Detection Differences between Angular and AngularJS - Mike Giambalvo https://youtu.be/CMkKzQmOnyg
+- 44 min NG-NL 2016: Pascal Precht - Angular 2 Change Detection Explained https://www.youtube.com/watch?v=CUxD91DWkGM
+
+#### ChangeDetectorRef.detectChanges() vs ChangeDetectorRef.markForCheck()
 https://stackoverflow.com/questions/41364386/whats-the-difference-between-markforcheck-and-detectchanges
 So in short :
 - Use detectChanges() when you've updated the model after angular has run it's change detection, or if the update hasn't been in angular world at all.
@@ -262,8 +297,9 @@ ngAfterViewInit() {
 
 ### How load config from server before bootstraping
 - http://stackoverflow.com/questions/39033835/angularjs2-preload-server-configuration-before-the-application-starts/39033958
-- code:
+- https://hackernoon.com/hook-into-angular-initialization-process-add41a6b7e
 
+- code:
 ```js
 @Injectable()
 export class ConfigService {
