@@ -1,5 +1,10 @@
 # HowToAngular2
 
+
+### Deserialize HTTP Json reposense in object
+- https://nehalist.io/working-with-models-in-angular/
+
+
 ### Template Slot system
 - `list.ts`
 ```html
@@ -274,6 +279,134 @@ export class ParentComponent {
 - vsetko v angular directive bude vymazane po na-bootstrap-ovani angular appky
 - logo/image ako byte array https://www.base64-image.de/ - vynecha dodatocny request pre obrazok v boostrap template-e
 
+#### Blinking WR logo Example
+
+```html
+<tbm-root>
+
+  <!--Pre-Bootstrap template START-->
+  <!--Will be removed once Angular code bootstraped and content of tmb-root directive is resolved-->
+  <style>
+
+    body, html {
+      margin: 0;
+      padding: 0;
+    }
+
+    .tbm-ng-pre-bootstrap-loading-wrapper {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .tbm-ng-pre-bootstrap-loading-wrapper_loading-image {
+      animation: fading 3s infinite linear;
+      height: 150px;
+      width: 150px;
+    }
+
+    @keyframes fading {
+      0% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.4;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+  </style>
+  <div class="tbm-ng-pre-bootstrap-loading-wrapper">
+    <img class="tbm-ng-pre-bootstrap-loading-wrapper_loading-image"
+         src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAMAAAAL34HQAAAC91BMVEUAAABZq8UAkrherscXUoMAkrgXUoNZq8UWVIVvscgonr8Bk7hwssgCk7k0osEBjLRgwtAJd6JewM9vsskAkrhwschwscgAkrg0osE/qsVwscg0osEWUoMGlLk0osEBkbgVmbxwschwscgXUoMAhK9stsoJlLldwM9fwtAXU4QBkbczocEWVoYHfacwoL8toMAUWYlNtMoKdaEdm70SX45DrsdwschgwtAAYZczosEAYZcAYZdUuswAkrhQt8tgwtA5psNmvM07qMQjnL5wschwschwschwscg0osE0osEAYZcLlrpwscgNbpsAaZxwscgAkrhwschwschwschwschutMlgwtAAkbgIlbozosElpcJIs8kAYZdwschwscgAkrgAkrhttMoOlboLlbomnb4ElLkXV4dvsslvsskEhq4AhrARl7s2pMIPlrpwscgAZZo8pMIZmbwLcp4AcKEMbZlAssgQZZMIXJBwscgAkrhwscgAkrgAkrgFYJVttcoAYZdnr8cLmLthrcZZvc4Ai7MFha5stcpwscgXnb4OlrofaZUAY5hbwM8xocEAfqpWvc4OlrojdZ80osFiwM8AdqVLuMsNbpoQZpQAkrg0osE0osEAkrhwscgvocFwscgAkrgAkrgAYJdwscgAYZdqt8sAj7ZgwtAbX41gwtARVohrt8sAgq1iwc9pucwOWIswqsQFYJQAkrgAkrgBZZkAkLdwscguoMBgwtA0osFwschwschwscgAkrhgwtA0osFgwtAAkrhlvM4dmr1avs4UVIZWu81gwtBcwM9gwtBNqMMGlLkeocACYJYxmrsAeagvlrgtjrIog6kAkrhgwtA0osFHq8U0osEAYZcAkrhJp8M0osEAYZcAYZc0osEAkrg0osEAkrg0osFaq8VhwdAAkrgAkrg0osFgwtBNucsGgqpPqMMegahhwdBgwtAAYZcTmLtgwtBwschgwtA0osFgwtAAkrgAkrgXUoNwscg0osFgwtAAYZcAkLYQQi7YAAAA9nRSTlMAynACPzAw5v7+z/35+fn33M0cCOvN7vTpykb7+fTw59acMyAPDQb77+3j4t7c2dPT0tLPzMpq+vjt6uXh2tnT0c/OzsFXIBT18+/m39TRvLGoi4VSJBTv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">
+  </div>
+  <!--Pre-Bootstrap template END-->
+
+</tbm-root>
+```
+
+#### Spinner Example
+
+```html
+<app>
+       <style type="text/css">
+           * {
+               outline: 0!important
+           }
+
+           .app-loader {
+               display: table;
+               height: 100vh;
+               width: 100%
+           }
+
+           .app-loader .loader-pusher {
+               display: table-cell;
+               text-align: center;
+               vertical-align: middle
+           }
+
+           .app-loader .loader-pusher .spinner {
+               background: url('/assets/logo.svg') no-repeat 50% 50% #f2f2f2;
+               background-size: 80%;
+               border-radius: 50%;
+               display: inline-block;
+               height: 80px;
+               position: relative;
+               width: 80px;
+               line-height: 80px;
+               text-align: center;
+               color: #fff;
+           }
+
+           .app-loader .loader-pusher .spinner .spinner-tail {
+               -webkit-animation: spinner .86s linear infinite;
+               animation: spinner .86s linear infinite;
+               background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzgiIGhlaWdodD0iMzgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IHgxPSI4LjA0MiUiIHkxPSIwJSIgeDI9IjY1LjY4MiUiIHkyPSIyMy44NjUlIiBpZD0iYSI+PHN0b3Agc3RvcC1jb2xvcj0iI2JlYmViZSIgc3RvcC1vcGFjaXR5PSIwIiBvZmZzZXQ9IjAlIi8+PHN0b3Agc3RvcC1jb2xvcj0iI2JlYmViZSIgc3RvcC1vcGFjaXR5PSIuNjMxIiBvZmZzZXQ9IjYzLjE0NiUiLz48c3RvcCBzdG9wLWNvbG9yPSIjYmViZWJlIiBvZmZzZXQ9IjEwMCUiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxIDEpIiBmaWxsPSJub25lIj48cGF0aCBkPSJNMzYgMThjMC05Ljk0LTguMDYtMTgtMTgtMTgiIHN0cm9rZT0idXJsKCNhKSIgc3Ryb2tlLXdpZHRoPSIyIi8+PGNpcmNsZSBmaWxsPSIjYmViZWJlIiBjeD0iMzYiIGN5PSIxOCIgcj0iMSIvPjwvZz48L3N2Zz4=) 0 0/cover no-repeat;
+               bottom: -10px;
+               left: -10px;
+               position: absolute;
+               right: -10px;
+               top: -10px;
+           }
+
+           @-webkit-keyframes spinner {
+               0% {
+                   -webkit-transform: rotate(0);
+                   transform: rotate(0)
+               }
+               100% {
+                   -webkit-transform: rotate(360deg);
+                   transform: rotate(360deg)
+               }
+           }
+
+           @keyframes spinner {
+               0% {
+                   -webkit-transform: rotate(0);
+                   transform: rotate(0)
+               }
+               100% {
+                   -webkit-transform: rotate(360deg);
+                   transform: rotate(360deg)
+               }
+           }
+       </style>
+       <div class="app-loader">
+           <div class="loader-pusher">
+               <div class="spinner">
+                   <div class="spinner-tail"></div>
+               </div>
+           </div>
+       </div>
+   </app>
+```
+
 
 
 ### Real debounce on input element
@@ -296,8 +429,9 @@ ngAfterViewInit() {
 
 
 ### How load config from server before bootstraping
-- http://stackoverflow.com/questions/39033835/angularjs2-preload-server-configuration-before-the-application-starts/39033958
+- https://github.com/angular/angular/issues/23279
 - https://hackernoon.com/hook-into-angular-initialization-process-add41a6b7e
+- http://stackoverflow.com/questions/39033835/angularjs2-preload-server-configuration-before-the-application-starts/39033958
 
 - code:
 ```js
