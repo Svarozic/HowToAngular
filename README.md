@@ -546,6 +546,11 @@ import 'rxjs/add/operator/map';
 
 
 
+### [TypeScript] Declare global variable if it is not recognized
+`declare var navigator;`
+
+
+
 ### [TypeScript] Ako explicitne setnem hodnotu na `window` objekt ?
 - http://stackoverflow.com/questions/12709074/how-do-you-explicitly-set-a-new-property-on-window-in-typescript
 - `(<any>window).WHATEVER=0`
